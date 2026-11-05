@@ -61,3 +61,14 @@ def generate_samples(question, n=5, temperature=0.8, max_new_tokens=80):
         generate_answer(question, temperature, max_new_tokens)["text"]
         for _ in range(n)
     ]
+def generate_with_context(question, passages, max_new_tokens=60):
+    """Answer using ONLY the given passages."""
+    context = "\n".join(f"- {p}" for p in passages)
+    prompt = (
+        "Answer the question using ONLY the context below. "
+        "If the context does not contain the answer, reply exactly: I don't know.\n\n"
+        f"Context:\n{context}\n\n"
+        f"Question: {question}\n"
+        "Answer in one short sentence."
+    )
+    return generate_answer(prompt, temperature=0.0, max_new_tokens=max_new_tokens)
