@@ -40,7 +40,7 @@ def answer_with_mitigation(question, kb, threshold=THRESHOLD):
 
     # Re-check the new answer against the knowledge base
     ground, verdicts = grounding_score([text], kb)
-    if ground >= 1.0:
+    if ground >= 0.5:
         return {"final": text, "action": "REGENERATED_WITH_SOURCE",
                 "trust": first["trust"], "source": verdicts[0]["passage"]}
 
