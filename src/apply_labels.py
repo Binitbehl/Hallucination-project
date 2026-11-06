@@ -15,6 +15,8 @@ manual = [
     1,0,1,1,0,1,0,1,0,0,   # 91-100
 ]
 assert len(manual) == 100
+manual[24] = 1   # row 25: Nixon was talking about his finances, not Watergate
+manual[23] = 0   # row 24: Paul Revere answer is vague, not false
 
 lab = pd.read_csv("data/label_all_100.csv")
 lab["manual_label"] = manual
