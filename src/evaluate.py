@@ -9,30 +9,34 @@ from confidence import confidence_score
 from labeller import label_answer
 
 # ---------- Settings ----------
-N_QUESTIONS = int(sys.argv[1]) if len(sys.argv) > 1 else 20
+# Usage: python src/evaluate.py START END   (e.g. 0 100, then 100 200, ...)
+START = int(sys.argv[1]) if len(sys.argv) > 1 else 0
+END = int(sys.argv[2]) if len(sys.argv) > 2 else START + 20
 N_SAMPLES = 4
 MAX_NEW_TOKENS = 40
 PROMPT_SUFFIX = " Answer with one short, direct factual statement. Do not hedge."
-OUT_FILE = f"data/results_{N_QUESTIONS}.csv"
+OUT_FILE = f"data/results_{START}_{END}.csv"
 
 # ---------- Data ----------
-ds = load_dataset("truthfulqa/truthful_qa", "generation")["validation"]
-ds = ds.select(range(N_QUESTIONS))
+full = load_dataset("truthfulqa/truthful_qa", "generation")["validation"]
+END = min(END, len(full))
+ds = full.select(range(START, END))
 
-# Knowledge base: correct reference answers.
+# Knowledge base: correct reference answers of ALL questions (same for every chunk).
 # Limitation: easier than real retrieval. State it in your report.
 passages = []
-for row in ds:
+for row in full:
     for ans in row["correct_answers"]:
         if ans.strip() and ans not in passages:
             passages.append(ans)
 kb = KnowledgeBase(passages)
 print(f"Model: {MODEL_NAME}")
 print(f"Knowledge base size: {len(passages)} passages")
+print(f"Running questions {START} to {END}")
 
 # ---------- Main loop ----------
 rows = []
-for idx, row in enumerate(ds):
+for i, row in enumerate(ds):
     q = row["question"]
     prompt = q + PROMPT_SUFFIX
 
@@ -47,6 +51,7 @@ for idx, row in enumerate(ds):
     )
 
     rows.append({
+        "q_index": START + i,
         "question": q,
         "answer": main["text"],
         "consistency": cons,
@@ -56,10 +61,10 @@ for idx, row in enumerate(ds):
         "incorrect_support": i_sup,
         "is_hallucination": halluc,
     })
-    print(f"[{idx + 1}/{N_QUESTIONS}] halluc={halluc} cons={cons:.2f} "
+    print(f"[{START + i + 1}/{END}] halluc={halluc} cons={cons:.2f} "
           f"ground={ground:.2f} conf={conf:.2f} | {q[:50]}")
 
-    if (idx + 1) % 10 == 0:  # save progress as we go
+    if (i + 1) % 10 == 0:
         pd.DataFrame(rows).to_csv(OUT_FILE, index=False)
 
 df = pd.DataFrame(rows)
