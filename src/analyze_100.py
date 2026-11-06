@@ -68,3 +68,4 @@ df.sample(30, random_state=0)[["question", "answer", "is_hallucination"]].to_csv
     "data/hand_check.csv", index=True
 )
 print("\nSaved data/hand_check.csv (30 rows to verify by hand)")
+df[["question", "answer", "is_hallucination"]].assign(manual_label="").to_csv("data/label_all_100.csv", index=False)
