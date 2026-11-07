@@ -1,0 +1,12 @@
+﻿Rows: 300 | hallucinated: 246 | correct: 54
+
+SINGLE SIGNALS
+consistency                                AUROC = 0.695  (95% CI 0.61 to 0.77)
+grounding                                  AUROC = 0.693  (95% CI 0.60 to 0.77)
+confidence                                 AUROC = 0.680  (95% CI 0.60 to 0.76)
+
+SIMPLE AVERAGE
+average of all three                       AUROC = 0.755  (95% CI 0.67 to 0.83)
+
+LEARNED COMBINATIONS (5-fold cross-validated)
+consistency + grounding                    AUROC = 0.748  (95% CI 0.67 to 0.82)
