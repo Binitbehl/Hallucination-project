@@ -1,0 +1,11 @@
+﻿[llm] Qwen/Qwen2.5-0.5B-Instruct on cpu
+
+Model: Qwen/Qwen2.5-0.5B-Instruct | device: cpu | questions: 10
+answer        13.016 s
+samples       54.348 s
+consistency    0.179 s
+grounding      2.329 s
+confidence     0.000 s
+
+Plain answer only:        13.02 s
+With all three signals:   69.87 s  (5.4x slower)
