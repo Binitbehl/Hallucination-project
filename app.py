@@ -47,7 +47,7 @@ def retrieve(question, k=5):
 
 st.set_page_config(page_title="Hallucination Detector", page_icon="🔍")
 st.title("Hallucination Detection and Mitigation")
-st.caption(f"B.Tech CSE mini project| Model: {MODEL_NAME}")
+st.caption(f"B.Tech CSE mini project, made by Binit Behl| Model: {MODEL_NAME}")
 
 kb = get_kb()
 
